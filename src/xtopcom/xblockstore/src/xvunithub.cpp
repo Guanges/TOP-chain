@@ -582,8 +582,9 @@ namespace top
 
         base::xauto_ptr<base::xvblock_t> xvblockstore_impl::load_block_object(const base::xvaccount_t & account, const uint64_t height, bool ask_full_load, const int atag)
         {
-            LOAD_BLOCKACCOUNT_PLUGIN(account_obj, account);
-            return load_block_from_index(account_obj.get(), account_obj->load_index(height, required_block), height, ask_full_load, atag);
+            //LOAD_BLOCKACCOUNT_PLUGIN(account_obj, account);
+            //return load_block_from_index(account_obj.get(), account_obj->load_index(height, required_block), height, ask_full_load, atag);
+            return nullptr;
         }
 
         std::vector<base::xvblock_ptr_t> xvblockstore_impl::load_block_object(const std::string & tx_hash,const base::enum_transaction_subtype type,const int atag)

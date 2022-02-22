@@ -82,7 +82,7 @@ public:
         REGISTER_QUERY_METHOD(getLatestBlock);
         REGISTER_QUERY_METHOD(getLatestFullBlock);
         REGISTER_QUERY_METHOD(getBlockByHeight);
-
+        REGISTER_QUERY_METHOD(getBlocksByHeight);
         REGISTER_QUERY_METHOD(getSyncNeighbors);
         // REGISTER_QUERY_METHOD(get_sync_overview);
         // REGISTER_QUERY_METHOD(get_sync_detail_all_table);
@@ -108,6 +108,7 @@ public:
     void getLatestBlock();
     void getLatestFullBlock();
     void getBlockByHeight();
+    void getBlocksByHeight();
     void getAccount();
     uint64_t get_timer_height() const;
     void getTimerInfo();

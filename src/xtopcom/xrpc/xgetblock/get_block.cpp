@@ -986,6 +986,37 @@ void get_block_handle::getBlockByHeight() {
     }
 }
 
+void get_block_handle::getBlocksByHeight() {
+    std::string owner = m_js_req["account_addr"].asString();
+    uint64_t height = m_js_req["height"].asUInt64();
+
+    std::string version = m_js_req["version"].asString();
+    if (version.empty()) {
+        version = RPC_VERSION_V1;
+    }
+
+    base::xvaccount_t _owner_vaddress(owner);
+
+    auto vblocks = m_block_store->load_block_object(_owner_vaddress, height).get_vector();
+    xJson::Value value;
+    for (base::xvblock_t* vblock : vblocks) {
+        data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
+        value.append(get_block_json(bp, version));
+    }
+    if (owner == sys_contract_zec_slash_info_addr) {
+        xJson::Value slash_prop;
+        std::error_code ec;
+        top::contract::xcontract_manager_t::instance().get_contract_data(top::common::xaccount_address_t{owner}, height, top::contract::xjson_format_t::detail, slash_prop, ec);
+        value["property_info"] = slash_prop;
+    } else if (owner.find(sys_contract_sharding_statistic_info_addr) != std::string::npos) {
+        xJson::Value statistic_prop;
+        std::error_code ec;
+        top::contract::xcontract_manager_t::instance().get_contract_data(top::common::xaccount_address_t{owner}, height, top::contract::xjson_format_t::detail, statistic_prop, ec);
+        value["statistic_info"] = statistic_prop;
+    }
+    m_js_rsp["value"] = value;
+}
+
 void get_block_handle::getBlock() {
     std::string type = m_js_req["type"].asString();
     std::string owner = m_js_req["account_addr"].asString();

@@ -1003,17 +1003,6 @@ void get_block_handle::getBlocksByHeight() {
         data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
         value.append(get_block_json(bp, version));
     }
-    if (owner == sys_contract_zec_slash_info_addr) {
-        xJson::Value slash_prop;
-        std::error_code ec;
-        top::contract::xcontract_manager_t::instance().get_contract_data(top::common::xaccount_address_t{owner}, height, top::contract::xjson_format_t::detail, slash_prop, ec);
-        value["property_info"] = slash_prop;
-    } else if (owner.find(sys_contract_sharding_statistic_info_addr) != std::string::npos) {
-        xJson::Value statistic_prop;
-        std::error_code ec;
-        top::contract::xcontract_manager_t::instance().get_contract_data(top::common::xaccount_address_t{owner}, height, top::contract::xjson_format_t::detail, statistic_prop, ec);
-        value["statistic_info"] = statistic_prop;
-    }
     m_js_rsp["value"] = value;
 }
 

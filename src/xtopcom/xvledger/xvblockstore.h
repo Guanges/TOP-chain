@@ -188,7 +188,7 @@ namespace top
             virtual xauto_ptr<xvblock_t>  load_block_object(const xvaccount_t & account,const uint64_t height,const uint64_t viewid,bool ask_full_load,const int atag = 0) = 0;
             virtual xauto_ptr<xvblock_t>  load_block_object(const xvaccount_t & account,const uint64_t height,const std::string & blockhash,bool ask_full_load,const int atag = 0) = 0;
             virtual xauto_ptr<xvblock_t>  load_block_object(const xvaccount_t & account,const uint64_t height,enum_xvblock_flag required_block,bool ask_full_load,const int atag = 0) = 0; //just return the highest viewid of matched flag
-            virtual xauto_ptr<xvblock_t>  load_block_object(const xvaccount_t & account, const uint64_t height, bool ask_full_load, const int atag = 0) = 0;
+            //virtual xauto_ptr<xvblock_t>  load_block_object(const xvaccount_t & account, const uint64_t height, bool ask_full_load, const int atag = 0) = 0;
             virtual std::vector<base::xvblock_ptr_t> load_block_object(const std::string & tx_hash,const enum_transaction_subtype type,const int atag = 0) = 0;
 
             virtual bool                  load_block_input(const xvaccount_t & account,xvblock_t* block,const int atag = 0) = 0;

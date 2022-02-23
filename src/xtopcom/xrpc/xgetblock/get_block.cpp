@@ -1604,12 +1604,12 @@ xJson::Value get_block_handle::get_blocks_json(xblock_t * bp, const std::string 
     set_body_info(body, bp, rpc_version);
 
     root["body"] = body;
-    if (bp->check_block_flag(base::enum_xvblock_flag_authenticated)) {
-        root["status"] = "cert";
+    if (bp->check_block_flag(base::enum_xvblock_flag_committed)) {
+        root["status"] = "committed";
     } else if (bp->check_block_flag(base::enum_xvblock_flag_locked)) {
-        root["status"] = "lock";
-    } else if (bp->check_block_flag(base::enum_xvblock_flag_committed)) {
-        root["status"] = "commit";
+        root["status"] = "locked";
+    } else if (bp->check_block_flag(base::enum_xvblock_flag_authenticated)) {
+        root["status"] = "cert";
     } else {
         root["status"] = "unknow";
     }

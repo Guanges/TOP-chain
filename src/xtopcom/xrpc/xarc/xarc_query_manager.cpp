@@ -41,6 +41,7 @@ xarc_query_manager::xarc_query_manager(observer_ptr<store::xstore_face_t> store,
     ARC_REGISTER_V1_METHOD(getTransaction);
     ARC_REGISTER_V1_METHOD(get_property);
     ARC_REGISTER_V1_METHOD(getBlock);
+    ARC_REGISTER_V1_METHOD(getBlocksByHeight);
     ARC_REGISTER_V1_METHOD(getChainInfo);
     ARC_REGISTER_V1_METHOD(getIssuanceDetail);
     ARC_REGISTER_V1_METHOD(getTimerInfo);
@@ -173,6 +174,59 @@ void xarc_query_manager::getBlock(xjson_proc_t & json_proc) {
         auto vb = m_block_store->get_latest_committed_block(_owner_vaddress, metrics::blockstore_access_from_rpc_get_committed_block);
         xblock_t * bp = dynamic_cast<xblock_t *>(vb.get());
         result_json["value"] = m_bh.get_block_json(bp);
+    }
+
+    json_proc.m_response_json["data"] = result_json;
+}
+
+void xarc_query_manager::getBlocksByHeight(xjson_proc_t & json_proc) {
+    std::string owner = json_proc.m_request_json["params"]["account_addr"].asString();
+
+    // add top address check
+    ADDRESS_CHECK_VALID(owner)
+
+    base::xvaccount_t _owner_vaddress(owner);
+    std::string type = "height";
+    auto height = json_proc.m_request_json["params"]["height"].asString();
+    xdbg("xarc_query_manager::getBlock account: %s, height: %s", owner.c_str(), height.c_str());
+
+    if (height == "latest") {
+        type = "last";
+    }
+    data::xblock_ptr_t bp{nullptr};
+    xJson::Value result_json;
+    if (type == "height") {
+        uint64_t hi = std::stoull(height);
+        xdbg("height: %llu", hi);
+        auto vblock_vector = m_block_store->load_block_object(_owner_vaddress, hi, true, metrics::blockstore_access_from_rpc_get_block);
+        auto vblocks = vblock_vector.get_vector();
+        xJson::Value value;
+        for (base::xvblock_t * vblock : vblocks) {
+            data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
+            value.append(m_bh.get_blocks_json(bp, version));
+        }
+        result_json["value"] = value;
+    } else if (type == "last") {
+        uint64_t lastHeight = 0;
+        uint64_t committedHeight = m_block_store->get_latest_committed_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
+        if (committedHeight > lastHeight) {
+            lastHeight = committedHeight;
+        }
+        uint64_t lockedHeight = m_block_store->get_latest_locked_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
+        if (lockedHeight > lastHeight) {
+            lastHeight = lockedHeight;
+        }
+        uint64_t certHeight = m_block_store->get_latest_cert_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
+        if (certHeight > lastHeight) {
+            lastHeight = certHeight;
+        }
+        auto vblock_vector = m_block_store->load_block_object(_owner_vaddress, lastHeight, metrics::blockstore_access_from_rpc_get_block_by_height);
+        auto vblocks = vblock_vector.get_vector();
+        for (base::xvblock_t * vblock : vblocks) {
+            data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
+            value.append(get_blocks_json(bp, version));
+        }
+        result_json["value"] = value;
     }
 
     json_proc.m_response_json["data"] = result_json;

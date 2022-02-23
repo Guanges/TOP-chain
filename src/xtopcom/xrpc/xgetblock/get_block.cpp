@@ -987,6 +987,7 @@ void get_block_handle::getBlockByHeight() {
 }
 
 void get_block_handle::getBlocksByHeight() {
+    std::string type = m_js_req["type"].asString();
     std::string owner = m_js_req["account_addr"].asString();
     uint64_t height = m_js_req["height"].asUInt64();
 
@@ -994,14 +995,35 @@ void get_block_handle::getBlocksByHeight() {
     if (version.empty()) {
         version = RPC_VERSION_V1;
     }
-
-    base::xvaccount_t _owner_vaddress(owner);
-
-    auto vblocks = m_block_store->load_block_object(_owner_vaddress, height).get_vector();
     xJson::Value value;
-    for (base::xvblock_t* vblock : vblocks) {
-        data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
-        value.append(get_block_json(bp, version));
+    base::xvaccount_t _owner_vaddress(owner);
+    if (type == "last") {
+        uint64_t lastHeight = 0;
+        uint64_t committedHeight = m_block_store->get_latest_committed_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
+        if (committedHeight > lastHeight) {
+            lastHeight = committedHeight;
+        }
+        uint64_t lockedHeight = m_block_store->get_latest_locked_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
+        if (lockedHeight > lastHeight) {
+            lastHeight = lockedHeight;
+        }
+        uint64_t certHeight = m_block_store->get_latest_cert_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
+        if (certHeight > lastHeight) {
+            lastHeight = certHeight;
+        }
+        auto vblock_vector = m_block_store->load_block_object(_owner_vaddress, lastHeight, metrics::blockstore_access_from_rpc_get_block_by_height);
+        auto vblocks = vblock_vector.get_vector();
+        for (base::xvblock_t * vblock : vblocks) {
+            data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
+            value.append(get_blocks_json(bp, version));
+        }
+    } else {
+        auto vblock_vector = m_block_store->load_block_object(_owner_vaddress, height, metrics::blockstore_access_from_rpc_get_block_by_height);
+        auto vblocks = vblock_vector.get_vector();
+        for (base::xvblock_t * vblock : vblocks) {
+            data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
+            value.append(get_blocks_json(bp, version));
+        }
     }
     m_js_rsp["value"] = value;
 }
@@ -1549,6 +1571,45 @@ xJson::Value get_block_handle::get_block_json(xblock_t * bp, const std::string &
 
     root["body"] = body;
 
+    return root;
+}
+
+xJson::Value get_block_handle::get_blocks_json(xblock_t * bp, const std::string & rpc_version) {
+    xJson::Value root;
+    if (bp == nullptr) {
+        return root;
+    }
+
+    if (bp->is_genesis_block() && bp->get_block_class() == base::enum_xvblock_class_nil && false == bp->check_block_flag(base::enum_xvblock_flag_stored)) {
+        // genesis empty non-stored block, should not return
+        return root;
+    }
+
+    // load input for raw tx get
+    if (false == base::xvchain_t::instance().get_xblockstore()->load_block_input(base::xvaccount_t(bp->get_account()), bp, metrics::blockstore_access_from_rpc_get_block_json)) {
+        xassert(false);  // db block should always load input success
+        return root;
+    }
+
+    set_shared_info(root, bp);
+
+    xJson::Value header;
+    set_header_info(header, bp);
+    root["header"] = header;
+
+    xJson::Value body;
+    set_body_info(body, bp, rpc_version);
+
+    root["body"] = body;
+    if (bp->check_block_flag(base::enum_xvblock_flag_authenticated)) {
+        root["status"] = "cert";
+    } else if (bp->check_block_flag(base::enum_xvblock_flag_locked)) {
+        root["status"] = "lock";
+    } else if (bp->check_block_flag(base::enum_xvblock_flag_committed)) {
+        root["status"] = "commit";
+    } else {
+        root["status"] = "unknow";
+    }
     return root;
 }
 

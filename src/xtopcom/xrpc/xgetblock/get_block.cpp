@@ -1001,19 +1001,7 @@ void get_block_handle::getBlocksByHeight() {
     xJson::Value value;
     base::xvaccount_t _owner_vaddress(owner);
     if (type == "last") {
-        uint64_t lastHeight = 0;
-        uint64_t committedHeight = m_block_store->get_latest_committed_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
-        if (committedHeight > lastHeight) {
-            lastHeight = committedHeight;
-        }
-        uint64_t lockedHeight = m_block_store->get_latest_locked_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
-        if (lockedHeight > lastHeight) {
-            lastHeight = lockedHeight;
-        }
-        uint64_t certHeight = m_block_store->get_latest_cert_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
-        if (certHeight > lastHeight) {
-            lastHeight = certHeight;
-        }
+        uint64_t lastHeight = m_block_store->get_latest_cert_block_height(_owner_vaddress, metrics::blockstore_access_from_rpc_get_block_by_height);
         auto vblock_vector = m_block_store->load_block_object(_owner_vaddress, lastHeight, metrics::blockstore_access_from_rpc_get_block_by_height);
         auto vblocks = vblock_vector.get_vector();
         for (base::xvblock_t * vblock : vblocks) {

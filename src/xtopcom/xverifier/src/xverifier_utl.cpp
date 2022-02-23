@@ -9,12 +9,12 @@
 
 NS_BEG2(top, xverifier)
 
-int32_t xtx_utl::address_is_valid(const std::string & addr) {
+int32_t xtx_utl::address_is_valid(const std::string & addr, bool isTransaction) {
     bool res = true;
     std::vector<std::string> parts;
     
     try {
-        if (false == top::base::xvaccount_t::check_address(addr)) {
+        if (false == top::base::xvaccount_t::check_address(addr, isTransaction)) {
             res = false;
         } else {
             if (base::xstring_utl::split_string(addr, '@', parts) >= 2) {

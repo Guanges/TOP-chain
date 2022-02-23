@@ -415,6 +415,9 @@ void xarc_query_manager::queryNodeInfo(xjson_proc_t & json_proc) {
 
     // add top address check
     ADDRESS_CHECK_VALID(owner)
+    if (!target.empty()) {
+        ADDRESS_CHECK_VALID(target)
+    }
 
     xJson::Value jv;
     std::string contract_addr = sys_contract_rec_registration_addr;
@@ -435,6 +438,9 @@ void xarc_query_manager::getElectInfo(xjson_proc_t & json_proc) {
 
     // add top address check
     ADDRESS_CHECK_VALID(owner)
+    if (!target.empty()) {
+        ADDRESS_CHECK_VALID(target)
+    }
 
     std::vector<std::string> ev;
     xJson::Value j;
@@ -498,6 +504,12 @@ void xarc_query_manager::set_sharding_vote_prop(xjson_proc_t & json_proc, std::s
     std::string owner = json_proc.m_request_json["params"]["account_addr"].asString();
     std::string target = json_proc.m_request_json["params"]["node_account_addr"].asString();
 
+    // add top address check
+    ADDRESS_CHECK_VALID(owner)
+    if (!target.empty()) {
+        ADDRESS_CHECK_VALID(target)
+    }
+
     xJson::Value jv;
 
     auto const & table_id = data::account_map_to_table_id(common::xaccount_address_t{target}).get_subaddr();
@@ -518,6 +530,9 @@ void xarc_query_manager::set_sharding_reward_claiming_prop(xjson_proc_t & json_p
 
     // add top address check
     ADDRESS_CHECK_VALID(owner)
+    if (!target.empty()) {
+        ADDRESS_CHECK_VALID(target)
+    }
 
     xJson::Value jv = m_bh.parse_sharding_reward(target, prop_name);
     json_proc.m_response_json["data"] = jv;

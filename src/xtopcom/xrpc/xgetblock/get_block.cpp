@@ -990,7 +990,10 @@ void get_block_handle::getBlocksByHeight() {
     std::string type = m_js_req["type"].asString();
     std::string owner = m_js_req["account_addr"].asString();
     uint64_t height = m_js_req["height"].asUInt64();
-
+    if (xverifier::xtx_utl::address_is_valid(owner) != xverifier::xverifier_error::xverifier_success) {
+        set_result(INVALID_ACCOUNT);
+        return;
+    }
     std::string version = m_js_req["version"].asString();
     if (version.empty()) {
         version = RPC_VERSION_V1;

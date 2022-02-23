@@ -1216,7 +1216,7 @@ static void set_user_info(task_info_callback<T> * info,
     info->host = g_server_host_port;
     info->callback_ = func;
     // only getTransaction & getBlock has 2.0 version rpc
-    if (method == CMD_ACCOUNT_TRANSACTION || method == CMD_GET_BLOCK) {
+    if (method == CMD_ACCOUNT_TRANSACTION || method == CMD_GET_BLOCK || method == CMD_GET_BLOCKS_BY_HEIGHT) {
         info->params["version"] = top::data::RPC_VERSION_V2;
     } else {
         info->params["version"] = top::data::RPC_VERSION_V1;

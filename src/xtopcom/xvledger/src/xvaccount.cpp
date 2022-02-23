@@ -131,7 +131,7 @@ namespace top
             }
         }
 
-        bool xvaccount_t::check_address(const std::string & account_addr)
+        bool xvaccount_t::check_address(const std::string & account_addr, bool isTransaction)
         {
             // check address min-length and max-length
             if(account_addr.size() <= enum_vaccount_address_prefix_size || account_addr.size() > enum_vaccount_address_max_size) {
@@ -156,8 +156,7 @@ namespace top
 
             // check addr type
             enum_vaccount_addr_type addr_type = get_addrtype_from_account(account_addr);
-            switch (addr_type)
-            {
+            switch (addr_type) {
                 case enum_vaccount_addr_type_root_account:
                 case enum_vaccount_addr_type_black_hole:
                 case enum_vaccount_addr_type_timer:
@@ -170,6 +169,26 @@ namespace top
                     }
                     break;
                 case enum_vaccount_addr_type_native_contract:
+                    if (isTransaction) {
+                        std::string strLedgrid = account_addr.substr(2, 4);
+                        if (strLedgrid == "00000") { // shard constracts
+                            if (parts_num != 2 && parts_num != 1) {
+                                xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d", isTransaction, addr_type, parts_num);
+                                return false;
+                            }
+                        } else {
+                            if (parts_num != 2) {
+                                xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d", isTransaction, addr_type, parts_num);
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (parts_num != 2) {
+                            xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d", isTransaction, addr_type, parts_num);
+                            return false;
+                        }
+                    }
+                    break;
                 case enum_vaccount_addr_type_block_contract:
                     if (parts_num != 2) {
                         xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. type=%d,parts_num=%d", addr_type, parts_num);

@@ -324,7 +324,7 @@ namespace top
             }
             static std::string compact_address_to(const std::string & account_addr);
             static std::string compact_address_from(const std::string & data);
-            static bool check_address(const std::string & account_addr);
+            static bool check_address(const std::string & account_addr, bool isTransaction = false);
 
         protected:
             static bool get_ledger_fulladdr_from_account(const std::string & account_addr,uint32_t & ledger_id,uint16_t & ledger_sub_addr,uint32_t & account_index)

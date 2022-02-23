@@ -173,12 +173,12 @@ namespace top
                         std::string strLedgrid = account_addr.substr(2, 4);
                         if (strLedgrid == "00000") { // shard constracts
                             if (parts_num != 2 && parts_num != 1) {
-                                xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d", isTransaction, addr_type, parts_num);
+                                xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d,ledgrid:%s", isTransaction, addr_type, parts_num, strLedgrid.c_str());
                                 return false;
                             }
                         } else {
                             if (parts_num != 2) {
-                                xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d", isTransaction, addr_type, parts_num);
+                                xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d,ledgrid:%s", isTransaction, addr_type, parts_num, strLedgrid.c_str());
                                 return false;
                             }
                         }

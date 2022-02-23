@@ -225,7 +225,7 @@ void xarc_query_manager::getBlocksByHeight(xjson_proc_t & json_proc) {
         xJson::Value value;
         for (base::xvblock_t * vblock : vblocks) {
             data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
-            value.append(get_blocks_json(bp));
+            value.append(m_bh.get_blocks_json(bp));
         }
         result_json["value"] = value;
     }

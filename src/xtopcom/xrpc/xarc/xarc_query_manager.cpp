@@ -222,6 +222,7 @@ void xarc_query_manager::getBlocksByHeight(xjson_proc_t & json_proc) {
         }
         auto vblock_vector = m_block_store->load_block_object(_owner_vaddress, lastHeight, metrics::blockstore_access_from_rpc_get_block_by_height);
         auto vblocks = vblock_vector.get_vector();
+        xJson::Value value;
         for (base::xvblock_t * vblock : vblocks) {
             data::xblock_t * bp = dynamic_cast<data::xblock_t *>(vblock);
             value.append(get_blocks_json(bp));

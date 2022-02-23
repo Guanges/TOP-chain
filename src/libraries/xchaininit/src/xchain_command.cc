@@ -750,6 +750,15 @@ int parse_execute_command(const char * config_file_extra, int argc, char * argv[
         "account_addr", queryBlock_account, "Account address to query its block block information. if you do not add this parameters, your default account will be queried.");
     queryBlock_app->callback(std::bind(&ApiMethod::query_block, &topcl.api, std::ref(queryBlock_account), std::ref(queryBlock_height), std::ref(out_str)));
 
+    // query blocks by height
+    auto queryBlock_app = chain_app->add_subcommand("getBlocksByHeight", "Query information of blocks By Height.");
+    std::string queryBlock_account;
+    std::string queryBlock_height;
+    queryBlock_app->add_option("height", queryBlock_height, "Integer of a block number, or the String \"latest\".")->required();
+    queryBlock_app->add_option(
+        "account_addr", queryBlock_account, "Account address to query its block block information. if you do not add this parameters, your default account will be queried.");
+    queryBlock_app->callback(std::bind(&ApiMethod::getBlocksByHeight, &topcl.api, std::ref(queryBlock_account), std::ref(queryBlock_height), std::ref(out_str)));
+
     // query chain info
     auto chainInfo_app = chain_app->add_subcommand("chainInfo", "Get chain informaion.");
     chainInfo_app->callback(std::bind(&ApiMethod::chain_info, &topcl.api, std::ref(out_str)));

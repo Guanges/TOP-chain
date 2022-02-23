@@ -171,7 +171,7 @@ namespace top
                 case enum_vaccount_addr_type_native_contract:
                     if (isTransaction) {
                         std::string strLedgrid = account_addr.substr(2, 4);
-                        if (strLedgrid == "00000") { // shard constracts
+                        if (strLedgrid == std::string("0000")) { // shard constracts
                             if (parts_num != 2 && parts_num != 1) {
                                 xwarn("xvaccount_t::check_address fail-addr type and parts num mismatch. isTransaction:%d type=%d,parts_num=%d,ledgrid:%s", isTransaction, addr_type, parts_num, strLedgrid.c_str());
                                 return false;

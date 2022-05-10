@@ -505,9 +505,9 @@ int xtransaction_v3_t::unserialize_top_v3_transaction(bytes & encoded, bool & bI
         std::string str(extradecode.decoded[i].begin(), extradecode.decoded[i].end());
         vecExtraData.push_back(str);
     }
-    if (vecData.size() != 7)
+    if (vecExtraData.size() != 7)
     {
-        if (vecData.size() > 7)
+        if (vecExtraData.size() > 7)
         {
             ETH_RPC_ERROR(error::xenum_errc::eth_server_error, "rlp:extra input list has too many elements for types.DynamicFeeTx")
         }
@@ -968,8 +968,23 @@ int32_t xtransaction_v3_t::parse(enum_xaction_type source_type, enum_xaction_typ
     if (get_tx_type() == xtransaction_type_transfer) {
         // todo: eth original amount is u256 
         xdbg("xtransaction_v3_t::parse tx:%s,amount=%s", dump().c_str(), m_eip_xxxx_tx ? m_eip_xxxx_tx->get_value().str().c_str() : "0");
-        tx_parse_data.m_asset = xproperty_asset(XPROPERTY_ASSET_ETH, 0);
-        tx_parse_data.m_amount_256 = m_eip_xxxx_tx ? m_eip_xxxx_tx->get_value() : 0;
+        if (m_EipVersion == EIP_XXXX::EIP_TOP_V3) {
+            uint32_t token_id = m_eip_xxxx_tx ? m_eip_xxxx_tx->get_token_id() : -1;
+            switch (token_id)
+            {
+            case 0: { tx_parse_data.m_asset = xproperty_asset(XPROPERTY_ASSET_TOP, 0); tx_parse_data.m_asset.m_amount = m_eip_xxxx_tx ? (uint64_t)m_eip_xxxx_tx->get_value() : 0; } break;
+            case 1: { tx_parse_data.m_asset = xproperty_asset(XPROPERTY_ASSET_ETH, 0); tx_parse_data.m_amount_256 = m_eip_xxxx_tx ? m_eip_xxxx_tx->get_value() : 0; } break;
+            case 2: { tx_parse_data.m_asset = xproperty_asset(XPROPERTY_ASSET_USDT, 0); tx_parse_data.m_amount_256 = m_eip_xxxx_tx ? m_eip_xxxx_tx->get_value() : 0;} break;
+            case 3: { tx_parse_data.m_asset = xproperty_asset(XPROPERTY_ASSET_USDC, 0); tx_parse_data.m_amount_256 = m_eip_xxxx_tx ? m_eip_xxxx_tx->get_value() : 0;} break;
+            default:
+                break;
+            }
+            
+        }
+        else {
+            tx_parse_data.m_asset = xproperty_asset(XPROPERTY_ASSET_ETH, 0);
+            tx_parse_data.m_amount_256 = m_eip_xxxx_tx ? m_eip_xxxx_tx->get_value() : 0;
+        }
     } else {
         xerror("xtransaction_v3_t::parse not support other transction types!tx:%s", dump().c_str());
         return xchain_error_action_param_empty;

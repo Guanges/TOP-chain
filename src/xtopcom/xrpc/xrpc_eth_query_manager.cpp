@@ -419,15 +419,17 @@ void xrpc_eth_query_manager::set_block_result(const base::xauto_ptr<base::xvbloc
     data::xtableheader_extra_t blockheader_extradata;
     string strLogsbloom;
     uint64_t gasused = 0;
-    int32_t ret = blockheader_extradata.deserialize_from_string(strExtraData);
-    if (ret <= 0) {
-        xerror("xtable_blockmaker_t::verify_block fail-extra data invalid");
+    if (!strExtraData.empty())
+    {
+        int32_t ret = blockheader_extradata.deserialize_from_string(strExtraData);
+        if (ret <= 0) {
+            xerror("xtable_blockmaker_t::verify_block fail-extra data invalid");
+        }
+        else {
+            strLogsbloom = blockheader_extradata.get_eth_logsbloom();
+            gasused = blockheader_extradata.get_eth_gasused();
+        }
     }
-    else {
-        strLogsbloom = blockheader_extradata.get_eth_logsbloom();
-        gasused = blockheader_extradata.get_eth_gasused();
-    }
-
     std::stringstream ethstr;
     ethstr << "0x" << std::hex << gasused;
     js_result["difficulty"] = "0x0";

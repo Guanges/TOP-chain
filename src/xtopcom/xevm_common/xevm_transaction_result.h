@@ -6,6 +6,7 @@
 
 #include "xbasic/xbyte_buffer.h"
 #include "xevm_common/fixed_hash.h"
+#include "xevm_common/address.h"
 #include "xutility/xhash.h"
 #include <string>
 #include <vector>
@@ -13,8 +14,8 @@
 NS_BEG2(top, evm_common)
 
 struct xevm_log_t {
-    std::string address;
-    std::vector<std::string> topics; // hex string
+    top::evm_common::Address address;
+    top::evm_common::h256s topics; // hex string
     std::string data; // hex string
 };
 /// same as TransactionStatus in `evm_engine_rs/engine/src/parameters.rs`
@@ -62,8 +63,7 @@ public:
         top::evm_common::h2048  logsbloom;
         for (auto & log : logs) {
             top::evm_common::h2048 bloom;
-            std::string str = top::base::xstring_utl::from_hex(log.address);
-            top::uint256_t hash = top::utl::xkeccak256_t::digest(str);
+            top::uint256_t hash = top::utl::xkeccak256_t::digest(log.address.data(), log.address.size);
             top::evm_common::h256 hash_h256;
             top::evm_common::bytesConstRef((const unsigned char *)hash.data(), hash.size()).copyTo(hash_h256.ref());
             bloom.shiftBloom<3>(hash_h256);
@@ -71,8 +71,7 @@ public:
 
             for (auto & topic : log.topics) {
                 top::evm_common::h2048 bloom;
-                std::string str = top::base::xstring_utl::from_hex(topic);
-                top::uint256_t hash = top::utl::xkeccak256_t::digest(str);
+                top::uint256_t hash = top::utl::xkeccak256_t::digest(topic.data(), topic.size);
                 top::evm_common::h256 hash_h256;
                 top::evm_common::bytesConstRef((const unsigned char *)hash.data(), hash.size()).copyTo(hash_h256.ref());
                 bloom.shiftBloom<3>(hash_h256);

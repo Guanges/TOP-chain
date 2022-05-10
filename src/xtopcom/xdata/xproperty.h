@@ -13,6 +13,8 @@ namespace top { namespace data {
 
 XINLINE_CONSTEXPR char const * XPROPERTY_ASSET_TOP                       = "TOP";
 XINLINE_CONSTEXPR char const * XPROPERTY_ASSET_ETH                       = "ETH";
+XINLINE_CONSTEXPR char const * XPROPERTY_ASSET_USDT                       = "USDT";
+XINLINE_CONSTEXPR char const * XPROPERTY_ASSET_USDC                       = "USDC";
 
 // $1-9 reserved for future
 XINLINE_CONSTEXPR char const * XPROPERTY_BALANCE_AVAILABLE              = "$0";  //available balance

@@ -66,7 +66,7 @@ class xevm_tx_result_t : public xbase_dataunit_t<xevm_tx_result_t, xdata_type_ev
             for (uint32_t j = 0; j < topics_num; j++) {
                 std::string topic_str;
                 stream.read_compact_var(topic_str);
-                evm_log.topics.push_back(topic_str);
+                evm_log.topics.push_back(top::evm_common::h256(topic_str));
             }
             std::string data_str;
             stream.read_compact_var(data_str);

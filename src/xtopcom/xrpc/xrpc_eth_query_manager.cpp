@@ -40,6 +40,7 @@
 #include "xdata/xtx_factory.h"
 #include "xevm/xevm.h"
 #include "xevm_common/address.h"
+#include "xdata/xblockbuild.h"
 #include "xevm_common/common.h"
 #include "xevm_common/common_data.h"
 #include "xevm_common/fixed_hash.h"
@@ -414,13 +415,28 @@ void xrpc_eth_query_manager::eth_getBlockByNumber(xJson::Value & js_req, xJson::
     return;
 }
 void xrpc_eth_query_manager::set_block_result(const base::xauto_ptr<base::xvblock_t>&  block, xJson::Value& js_result, bool fullTx) {
+    std::string strExtraData = block->get_header()->get_extra_data();
+    data::xtableheader_extra_t blockheader_extradata;
+    string strLogsbloom;
+    uint64_t gasused = 0;
+    int32_t ret = blockheader_extradata.deserialize_from_string(strExtraData);
+    if (ret <= 0) {
+        xerror("xtable_blockmaker_t::verify_block fail-extra data invalid");
+    }
+    else {
+        strLogsbloom = blockheader_extradata.get_eth_logsbloom();
+        gasused = blockheader_extradata.get_eth_gasused();
+    }
+
+    std::stringstream ethstr;
+    ethstr << "0x" << std::hex << gasused;
     js_result["difficulty"] = "0x0";
     js_result["extraData"] = "0x0";
     js_result["gasLimit"] = "0x0";
-    js_result["gasUsed"] = "0x0";
+    js_result["gasUsed"] = ethstr.str();
     std::string hash = block->get_block_hash();
     js_result["hash"] = std::string("0x") + top::HexEncode(hash); //js_req["tx_hash"].asString();
-    js_result["logsBloom"] = "0x0";
+    js_result["logsBloom"] = std::string("0x") + (strLogsbloom.empty() ? std::string("0") : top::HexEncode(strLogsbloom));
     js_result["miner"] = std::string("0x") + std::string(40, '0');
     js_result["mixHash"] = "0x0";
     js_result["nonce"] = "0x0";

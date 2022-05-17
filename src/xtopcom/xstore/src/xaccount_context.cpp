@@ -123,7 +123,7 @@ int32_t xaccount_context_t::create_user_account(const std::string& address) {
         xerror("xaccount_context_t::create_user_account fail-eth token not zero");
         return -1;
     }
-    m_account->tep_token_deposit(data::XPROPERTY_TEP1_BALANCE_KEY, token_name, add_token_256);
+    m_account->tep_token_deposit(token_name, add_token_256);
 
     token_name = data::XPROPERTY_ASSET_USDT;
     old_token_256 = m_account->tep_token_balance(data::XPROPERTY_TEP1_BALANCE_KEY, token_name);
@@ -131,7 +131,7 @@ int32_t xaccount_context_t::create_user_account(const std::string& address) {
         xerror("xaccount_context_t::create_user_account fail-eth token not zero");
         return -1;
     }
-    m_account->tep_token_deposit(data::XPROPERTY_TEP1_BALANCE_KEY, token_name, add_token_256);
+    m_account->tep_token_deposit(token_name, add_token_256);
 
     token_name = data::XPROPERTY_ASSET_USDC;
     old_token_256 = m_account->tep_token_balance(data::XPROPERTY_TEP1_BALANCE_KEY, token_name);

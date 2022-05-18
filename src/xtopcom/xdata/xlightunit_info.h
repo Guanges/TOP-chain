@@ -60,7 +60,9 @@ class xevm_tx_result_t : public xbase_dataunit_t<xevm_tx_result_t, xdata_type_ev
         stream.read_compact_var(count);
         for (uint32_t i = 0; i < count; i++) {
             evm_common::xevm_log_t evm_log;
-            stream.read_compact_var(evm_log.address);
+            std::string address;
+            stream.read_compact_var(std::string(address);
+            evm_log.address = top::evm_common::Address(address);
             uint32_t topics_num;
             stream.read_compact_var(topics_num);
             for (uint32_t j = 0; j < topics_num; j++) {

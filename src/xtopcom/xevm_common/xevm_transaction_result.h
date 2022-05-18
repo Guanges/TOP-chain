@@ -111,7 +111,7 @@ public:
     xevm_transaction_status_t status;
     uint64_t cumulative_gas_used;
     std::vector<xevm_log_t> logs;
-    top::evm_common::h265   tx_hash;
+    top::evm_common::h256   tx_hash;
     top::evm_common::Address contract_address;
     uint64_t used_gas{0}; // todo: calculate used gas to expense
     std::string extra_msg;

@@ -88,4 +88,64 @@ public:
     }
 };
 
+class xevm_transaction_receipt_t {
+ public:
+    xevm_transaction_receipt_t(){}
+    xevm_transaction_receipt_t(const xevm_transaction_receipt_t & evm_transaction_receipt) {
+        used_gas = evm_transaction_receipt.used_gas;
+        status = evm_transaction_receipt.status;
+        extra_msg = evm_transaction_receipt.extra_msg;
+        logs = evm_transaction_receipt.logs;
+    }
+
+    xevm_transaction_receipt_t & operator = (const xevm_transaction_receipt_t & evm_transaction_receipt) {
+        used_gas = evm_transaction_receipt.used_gas;
+        status = evm_transaction_receipt.status;
+        extra_msg = evm_transaction_receipt.extra_msg;
+        logs = evm_transaction_receipt.logs;
+        return *this;
+    }
+
+public:
+    xevm_transaction_status_t status;
+    uint64_t cumulative_gas_used;
+    std::vector<xevm_log_t> logs;
+    top::evm_common::h265   tx_hash;
+    top::evm_common::Address contract_address;
+    uint64_t used_gas{0}; // todo: calculate used gas to expense
+    std::string extra_msg;
+
+    void set_status(uint32_t input) {
+        status = static_cast<xevm_transaction_status_t>(input);
+    }
+
+    top::evm_common::h2048 get_logsbloom() {
+        top::evm_common::h2048  logsbloom;
+        for (auto & log : logs) {
+            top::evm_common::h2048 bloom;
+            top::uint256_t hash = top::utl::xkeccak256_t::digest(log.address.data(), log.address.size);
+            top::evm_common::h256 hash_h256;
+            top::evm_common::bytesConstRef((const unsigned char *)hash.data(), hash.size()).copyTo(hash_h256.ref());
+            bloom.shiftBloom<3>(hash_h256);
+            logsbloom |= bloom;
+
+            for (auto & topic : log.topics) {
+                top::evm_common::h2048 bloom;
+                top::uint256_t hash = top::utl::xkeccak256_t::digest(topic.data(), topic.size);
+                top::evm_common::h256 hash_h256;
+                top::evm_common::bytesConstRef((const unsigned char *)hash.data(), hash.size()).copyTo(hash_h256.ref());
+                bloom.shiftBloom<3>(hash_h256);
+                logsbloom |= bloom;
+            }
+        }
+        return logsbloom;
+    }
+
+    // debug
+    std::string dump_info() {
+        return "transaction_result[status:" + std::to_string(static_cast<std::underlying_type<xevm_transaction_status_t>::type>(status)) + ", extra_msg:" + extra_msg +
+               "], logs.size():" + std::to_string(logs.size());
+    }
+};
+
 NS_END2

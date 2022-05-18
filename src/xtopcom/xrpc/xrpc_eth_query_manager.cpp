@@ -341,7 +341,7 @@ void xrpc_eth_query_manager::eth_getTransactionReceipt(xJson::Value & js_req, xJ
             logs_bloom |= bloom;
 
             for (auto & topic : log.topics) {
-                js_log["topics"].append(topic.hex());
+                js_log["topics"].append(std::string("0x").append(topic.hex()));
                 evm_common::h2048 topic_bloom = calculate_bloom(std::string((char*)topic.data(), topic.size));
                 logs_bloom |= topic_bloom;
             }

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "xconfig/xconfig_register.h"
+#include "xconfig/xpredefined_configurations.h"
 #include "xdata/xcons_transaction.h"
 #include "xtxexecutor/xbatchtx_executor.h"
 #include "xtxexecutor/xunit_service_error.h"

@@ -450,16 +450,16 @@ bool xtop_evm_erc20_sys_contract::execute(xbytes_t input,
 
         if (!ec) {
             evm_common::xevm_log_t log;
-            log.address = top::to_string(contract_address.to_h160());
-            assert(log.address.size() == 20);
+            log.address = top::evm_common::Address(top::to_string(contract_address.to_h160()));
+            assert(log.address.size == 20);
             log.data = top::to_string(amount);
             assert(log.data.size() == 32);
-            log.topics.push_back(top::to_string(evm_common::fromHex("0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925", evm_common::WhenError::Throw)));
-            assert(log.topics.back().size() == 32);
-            log.topics.push_back(top::to_string(caller_address.to_h256()));
-            assert(log.topics.back().size() == 32);
-            log.topics.push_back(top::to_string(spender_address.to_h256()));
-            assert(log.topics.back().size() == 32);
+            log.topics.push_back(top::evm_common::h256(top::to_string(evm_common::fromHex("0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925", evm_common::WhenError::Throw))));
+            assert(log.topics.back().size == 32);
+            log.topics.push_back(top::evm_common::h256(top::to_string(caller_address.to_h256())));
+            assert(log.topics.back().size == 32);
+            log.topics.push_back(top::evm_common::h256(top::to_string(spender_address.to_h256())));
+            assert(log.topics.back().size == 32);
 
             result[31] = 1;
 

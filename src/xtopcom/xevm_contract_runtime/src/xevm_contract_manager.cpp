@@ -65,7 +65,9 @@ bool xtop_evm_contract_manager::execute_sys_contract(xbytes_t const & input, obs
 
                 for (std::size_t j = 0; j < contract_output.logs[i].topics.size(); ++j) {
                     auto topic = log->add_topics();
-                    topic->set_data(contract_output.logs[i].topics[j]);
+                    std::string topic;
+                    topic->set_data(topic);
+                    contract_output.logs[i].topics[j] = top::evm_common::h256(topic);
                 }
             }
             output = top::to_bytes(return_output.SerializeAsString());

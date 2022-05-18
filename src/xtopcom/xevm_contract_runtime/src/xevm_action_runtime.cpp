@@ -75,7 +75,7 @@ evm_common::xevm_transaction_result_t xtop_action_runtime<data::xevm_consensus_a
         // logs:
         for (int i = 0; i < return_result.logs_size(); ++i) {
             evm_common::xevm_log_t log;
-            log.address = top::evm_common::Address(return_result.logs(i).address().value());
+            log.address = top::common::xtop_eth_address(return_result.logs(i).address().value());
             log.data = evm::xvariant_bytes{return_result.logs(i).data(), false}.to_hex_string("0x");
             // log.data = top::to_bytes(return_result.logs(i).data());
             std::vector<top::evm_common::h256> topic;

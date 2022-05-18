@@ -5,6 +5,7 @@
 #pragma once
 
 #include "xbasic/xbyte_buffer.h"
+#include "xcommon/xeth_address.h"
 #include "xevm_common/fixed_hash.h"
 #include "xevm_common/address.h"
 #include "xutility/xhash.h"
@@ -14,7 +15,7 @@
 NS_BEG2(top, evm_common)
 
 struct xevm_log_t {
-    top::evm_common::Address address;
+    top::common::xtop_eth_address address;
     top::evm_common::h256s topics; // hex string
     std::string data; // hex string
 };
@@ -63,7 +64,7 @@ public:
         top::evm_common::h2048  logsbloom;
         for (auto & log : logs) {
             top::evm_common::h2048 bloom;
-            top::uint256_t hash = top::utl::xkeccak256_t::digest(log.address.data(), log.address.size);
+            top::uint256_t hash = top::utl::xkeccak256_t::digest(log.address.to_bytes().data(), log.address.size());
             top::evm_common::h256 hash_h256;
             top::evm_common::bytesConstRef((const unsigned char *)hash.data(), hash.size()).copyTo(hash_h256.ref());
             bloom.shiftBloom<3>(hash_h256);

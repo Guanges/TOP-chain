@@ -335,7 +335,7 @@ void xrpc_eth_query_manager::eth_getTransactionReceipt(xJson::Value & js_req, xJ
             js_log["blockHash"] = block_hash;
             js_log["transactionHash"] = tx_hash;
             js_log["transactionIndex"] = tx_idx;
-            js_log["address"] = std::string("0x").append(log.address.hex());
+            js_log["address"] = log.address.to_hex_string();
 
             evm_common::h2048 bloom = calculate_bloom(std::string((char*)log.address.data(), log.address.size));
             logs_bloom |= bloom;

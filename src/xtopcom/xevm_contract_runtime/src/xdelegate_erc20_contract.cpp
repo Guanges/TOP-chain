@@ -244,7 +244,7 @@ bool xtop_evm_erc20_sys_contract::execute(xbytes_t input,
             auto const & caller_address = context.caller;
 
             evm_common::xevm_log_t log;
-            log.address = top::evm_common::Address(top::to_string(contract_address.to_h160()));
+            log.address = contract_address;
             assert(log.address.size == 20);
             log.data = top::to_string(value);
             assert(log.data.size() == 32);
@@ -359,7 +359,7 @@ bool xtop_evm_erc20_sys_contract::execute(xbytes_t input,
             auto const & contract_address = context.address;
 
             evm_common::xevm_log_t log;
-            log.address = top::evm_common::Address(top::to_string(contract_address.to_h160()));
+            log.address = contract_address;
             assert(log.address.size == 20);
             log.data = top::to_string(value);
             assert(log.data.size() == 32);
@@ -450,7 +450,7 @@ bool xtop_evm_erc20_sys_contract::execute(xbytes_t input,
 
         if (!ec) {
             evm_common::xevm_log_t log;
-            log.address = top::evm_common::Address(top::to_string(contract_address.to_h160()));
+            log.address = contract_address;
             assert(log.address.size == 20);
             log.data = top::to_string(amount);
             assert(log.data.size() == 32);
@@ -607,7 +607,7 @@ bool xtop_evm_erc20_sys_contract::execute(xbytes_t input,
             auto const & recipient_address = context.caller;
 
             evm_common::xevm_log_t log;
-            log.address = top::evm_common::Address(top::to_string(contract_address.to_h160()));
+            log.address = contract_address;
             assert(log.address.size == 20);
             log.data = top::to_string(value);
             assert(log.data.size() == 32);

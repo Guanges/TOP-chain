@@ -59,7 +59,7 @@ bool xtop_evm_contract_manager::execute_sys_contract(xbytes_t const & input, obs
                 auto address = log->mutable_address();
                 std::string value;
                 address->set_value(value);
-                contract_output.logs[i].address = top::evm_common::Address(value);
+                contract_output.logs[i].address = top::common::xtop_eth_address(value);
 
                 log->set_data(contract_output.logs[i].data);
 

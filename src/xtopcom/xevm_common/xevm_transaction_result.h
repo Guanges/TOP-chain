@@ -124,7 +124,7 @@ public:
         top::evm_common::h2048  logsbloom;
         for (auto & log : logs) {
             top::evm_common::h2048 bloom;
-            top::uint256_t hash = top::utl::xkeccak256_t::digest(log.address.to_bytes().data(), log.address.size);
+            top::uint256_t hash = top::utl::xkeccak256_t::digest(log.address.to_bytes().data(), log.address.size());
             top::evm_common::h256 hash_h256;
             top::evm_common::bytesConstRef((const unsigned char *)hash.data(), hash.size()).copyTo(hash_h256.ref());
             bloom.shiftBloom<3>(hash_h256);

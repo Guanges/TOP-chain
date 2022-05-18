@@ -63,6 +63,10 @@ xtop_eth_address::xtop_eth_address() {
 xtop_eth_address::xtop_eth_address(std::array<uint8_t, 20> const & raw_account_address) : raw_address_(raw_account_address) {
 }
 
+xtop_eth_address::xtop_eth_address(byte* data, size_t size) {
+    std::copy(data, data + size, raw_address_);
+}
+
 xtop_eth_address::xtop_eth_address(std::string const & account_string) {
     std::error_code ec;
     auto const & bytes = top::from_hex(account_string, ec);

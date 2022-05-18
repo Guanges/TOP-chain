@@ -266,10 +266,9 @@ void xrpc_eth_query_manager::eth_getTransactionByHash(xJson::Value & js_req, xJs
     return;
 }
 
-top::evm_common::h2048 xrpc_eth_query_manager::calculate_bloom(const std::string & hexstr) {
+top::evm_common::h2048 xrpc_eth_query_manager::calculate_bloom(const std::string & str) {
     top::evm_common::h2048 bloom;
     char szDigest[32] = {0};
-    std::string str = HexDecode(hexstr);
     keccak_256((const unsigned char *)str.data(), str.size(), (unsigned char *)szDigest);
     top::evm_common::h256 hash_h256;
     top::evm_common::bytesConstRef((const unsigned char *)szDigest, 32).copyTo(hash_h256.ref());
@@ -336,14 +335,14 @@ void xrpc_eth_query_manager::eth_getTransactionReceipt(xJson::Value & js_req, xJ
             js_log["blockHash"] = block_hash;
             js_log["transactionHash"] = tx_hash;
             js_log["transactionIndex"] = tx_idx;
-            js_log["address"] = log.address;
+            js_log["address"] = std::string("0x").append(log.address.hex());
 
-            evm_common::h2048 bloom = calculate_bloom(log.address);
+            evm_common::h2048 bloom = calculate_bloom(std::string(log.address.data(), log.address.size()));
             logs_bloom |= bloom;
 
             for (auto & topic : log.topics) {
-                js_log["topics"].append(topic);
-                evm_common::h2048 topic_bloom = calculate_bloom(topic);
+                js_log["topics"].append(topic.hex());
+                evm_common::h2048 topic_bloom = calculate_bloom(std::string(log.address.data(), log.address.size()));
                 logs_bloom |= topic_bloom;
             }
 

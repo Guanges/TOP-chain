@@ -38,11 +38,11 @@ class xevm_tx_result_t : public xbase_dataunit_t<xevm_tx_result_t, xdata_type_ev
         uint32_t count = m_evm_tx_result.logs.size();
         stream.write_compact_var(count);
         for (uint32_t i = 0; i < count; i++) {
-            stream.write_compact_var(m_evm_tx_result.logs[i].address);
+            stream.write_compact_var(std::string((char*)m_evm_tx_result.logs[i].address.data(), m_evm_tx_result.logs[i].address.size));
             uint32_t topics_num = m_evm_tx_result.logs[i].topics.size();
             stream.write_compact_var(topics_num);
             for (uint32_t j = 0; j < topics_num; j++) {
-                stream.write_compact_var(m_evm_tx_result.logs[i].topics[j]);
+                stream.write_compact_var(std::string((char*)m_evm_tx_result.logs[i].topics[j].data(), m_evm_tx_result.logs[i].topics[j].size));
             }
             stream.write_compact_var(m_evm_tx_result.logs[i].data);
         }

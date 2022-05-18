@@ -31,7 +31,7 @@ public:
     xtop_eth_address();
 
     explicit xtop_eth_address(std::array<uint8_t, SIZE> const & raw_account_address);
-    explicit xtop_eth_address(byte* data, size_t size);
+    explicit xtop_eth_address(char* data, size_t size);
 
     static xtop_eth_address build_from(xaccount_address_t const & account_address, std::error_code & ec);
     static xtop_eth_address build_from(xaccount_address_t const & account_address);

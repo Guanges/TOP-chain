@@ -38,7 +38,7 @@ class xevm_tx_result_t : public xbase_dataunit_t<xevm_tx_result_t, xdata_type_ev
         uint32_t count = m_evm_tx_result.logs.size();
         stream.write_compact_var(count);
         for (uint32_t i = 0; i < count; i++) {
-            stream.write_compact_var(std::string((char*)m_evm_tx_result.logs[i].address.to_bytes().data(), m_evm_tx_result.logs[i].address.size()));
+            stream.write_compact_var(std::string(char*)m_evm_tx_result.logs[i].address.to_bytes().data(), m_evm_tx_result.logs[i].address.size()));
             uint32_t topics_num = m_evm_tx_result.logs[i].topics.size();
             stream.write_compact_var(topics_num);
             for (uint32_t j = 0; j < topics_num; j++) {
@@ -62,7 +62,7 @@ class xevm_tx_result_t : public xbase_dataunit_t<xevm_tx_result_t, xdata_type_ev
             evm_common::xevm_log_t evm_log;
             std::string address;
             stream.read_compact_var(address);
-            evm_log.address = top::common::xtop_eth_address(address);
+            evm_log.address = top::common::xtop_eth_address(address.data(), address.size());
             uint32_t topics_num;
             stream.read_compact_var(topics_num);
             for (uint32_t j = 0; j < topics_num; j++) {

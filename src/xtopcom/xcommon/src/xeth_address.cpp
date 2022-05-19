@@ -67,7 +67,6 @@ xtop_eth_address::xtop_eth_address(char* data, size_t size) {
     std::string address;
     address.append(data, size);
     std::copy(address.begin(), address.end(), raw_address_);
-    raw_address_.
 }
 
 xtop_eth_address::xtop_eth_address(std::string const & account_string) {

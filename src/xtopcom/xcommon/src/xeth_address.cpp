@@ -66,7 +66,7 @@ xtop_eth_address::xtop_eth_address(std::array<uint8_t, 20> const & raw_account_a
 xtop_eth_address::xtop_eth_address(char* data, size_t size) {
     std::string address;
     address.append(data, size);
-    std::copy(address.begin(), address.end(), raw_address_);
+    std::copy(address.begin(), address.end(), std::begin(raw_address_));
 }
 
 xtop_eth_address::xtop_eth_address(std::string const & account_string) {
